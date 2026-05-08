@@ -1,18 +1,25 @@
-name: GitHub Hosted Runner Demo
+name: Deploy to Cloud Server
 on:
  push:
-   branches:
-     - main
+ branches:
+ - main
  workflow_dispatch:
 jobs:
- run-python-job:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Checkout repository code
-       uses: actions/checkout@v4
-     - name: Show runner operating system
-       run: uname -a
-     - name: Check Python version
-       run: python3 --version
-     - name: Run Python file
-       run: python3 app.py
+ deploy:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Checkout Repository Code
+ uses: actions/checkout@v4
+ - name: Test Application
+ run: python3 app.py
+ - name: Deploy to Server Using SSH
+ uses: appleboy/ssh-action@v1.0.3
+ with:
+ host: ${{ secrets.SERVER_HOST }}
+ username: ${{ secrets.SERVER_USER }}
+ key: ${{ secrets.SERVER_SSH_KEY }}
+ script: |
+ echo "Connected to server successfully"
+ mkdir -p ~/github-actions-deploy-demo
+ cd ~/github-actions-deploy-demo
+ echo "Deployment completed from GitHub
